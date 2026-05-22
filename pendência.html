@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>App Programação</title>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#f0f4f8;
+padding:8px;
+margin:0;
+}
+
+h2{
+color:#003A8F;
+font-size:22px;
+}
+
+input,select,textarea{
+padding:8px;
+margin:4px;
+width:160px;
+border:1px solid #ccc;
+border-radius:6px;
+font-size:14px;
+}
+
+textarea{
+width:330px;
+height:70px;
+resize:none;
+}
+
+button{
+padding:8px 12px;
+margin:5px;
+border:none;
+border-radius:6px;
+background:#003A8F;
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+font-size:12px;
+}
+
+.card{
+background:#fff;
+padding:12px;
+border-radius:14px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+margin-top:10px;
+overflow:hidden;
+width:100%;
+}
+
+#tela2{
+display:none;
+}
+
+.titulo{
+text-align:center;
+font-size:18px;
+font-weight:bold;
+color:#003A8F;
+margin-top:5px;
+word-break:break-word;
+}
+
+.dataTopo{
+text-align:center;
+font-size:10px;
+color:#666;
+margin-bottom:12px;
+}
+
+.tabela{
+width:100%;
+overflow:hidden;
+border-radius:12px;
+}
+
+.linha{
+display:grid;
+grid-template-columns:
+1.2fr
+1fr
+1.2fr
+1.5fr
+1.2fr;
+gap:6px;
+padding:12px 6px;
+border-bottom:1px solid #eee;
+font-size:10px;
+align-items:center;
+text-align:center;
+width:100%;
+}
+
+.topoTabela{
+background:#003A8F;
+color:#fff;
+font-weight:bold;
+font-size:10px;
+border:none;
+border-radius:12px;
+min-height:70px;
+}
+
+.statusAzul{
+color:#1565c0;
+font-weight:bold;
+font-size:8px;
+line-height:11px;
+}
+
+.statusVermelho{
+color:red;
+font-weight:bold;
+font-size:8px;
+line-height:11px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:14px;
+width:100%;
+}
+
+.cardResumo{
+background:#dfe7f5;
+padding:12px;
+border-radius:18px;
+text-align:center;
+font-size:11px;
+font-weight:bold;
+min-height:95px;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+.numeroResumo{
+margin-top:10px;
+font-size:16px;
+font-weight:bold;
+}
+
+.rodape{
+text-align:center;
+margin-top:16px;
+font-size:11px;
+font-weight:bold;
+}
+
+.listaItem{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px;
+border-bottom:1px solid #eee;
+font-size:12px;
+}
+
+.botoes{
+display:flex;
+gap:5px;
+}
+
+.editar{
+background:orange;
+}
+
+.excluir{
+background:red;
+}
+
+#relatorio{
+overflow:visible;
+}
+
+.campoGrande{
+width:330px;
+}
+
+@media(min-width:700px){
+
+.cards{
+grid-template-columns:repeat(4,1fr);
+}
+
+.linha{
+font-size:12px;
+}
+
+.topoTabela{
+font-size:11px;
+}
+
+.statusAzul,
+.statusVermelho{
+font-size:10px;
+line-height:13px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="tela1">
+
+<h2>Cadastro</h2>
+
+<input id="oc" placeholder="Ocorrência">
+
+<input id="os" placeholder="Ordem de Serviço">
+
+<select id="mesOc">
+
+<option value="01">01</option>
+<option value="02">02</option>
+<option value="03">03</option>
+<option value="04">04</option>
+<option value="05">05</option>
+<option value="06">06</option>
+<option value="07">07</option>
+<option value="08">08</option>
+<option value="09">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+
+</select>
+
+<select id="recurso">
+
+<option>TP</option>
+<option>LV</option>
+<option>TLV</option>
+<option>TP+LV</option>
+<option>TP+PD</option>
+<option>TP+ROÇ</option>
+
+</select>
+
+<select id="utd">
+
+<option>GOIANA</option>
+<option>PAULISTA</option>
+<option>CAMARAGIBE</option>
+<option>TIMBAÚBA</option>
+<option>CARPINA</option>
+
+</select>
+
+<br>
+
+<input id="endereco" class="campoGrande" placeholder="Endereço">
+
+<br>
+
+<textarea id="defeito" placeholder="Defeito"></textarea>
+
+<br>
+
+<label>Data de Programação:</label>
+
+<input id="dataProg" type="date">
+
+<br>
+
+<button id="btnAdd" onclick="add()">Adicionar</button>
+
+<button onclick="limpar()">Limpar Tudo</button>
+
+<button onclick="visualizar()">Visualizar</button>
+
+<button onclick="gerarPDF()">Gerar PDF</button>
+
+<div id="lista" class="card"></div>
+
+</div>
+
+<div id="tela2">
+
+<button onclick="voltar()">Voltar</button>
+
+<button onclick="gerar()">Gerar Imagem</button>
+
+<div id="relatorio" class="card"></div>
+
+</div>
+
+<script>
+
+const URL_SCRIPT =
+"https://script.google.com/macros/s/AKfycbyL1FnLwL4rpgiRt8deaK-vXuiXU7EhrjRqCqU-zhonMqItO8GOY23I4AzqEKHxfjfk/exec";
+
+let dados = [];
+let editIndex = null;
+
+document.getElementById("mesOc").value =
+String(new Date().getMonth() + 1).padStart(2,"0");
+
+function carregar(){
+
+let salvo = localStorage.getItem("dadosProgramacao");
+
+if(salvo){
+
+dados = JSON.parse(salvo);
+render();
+
+}
+
+}
+
+function salvar(){
+
+localStorage.setItem(
+"dadosProgramacao",
+JSON.stringify(dados)
+);
+
+}
+
+function gerarNumeroOcorrencia(numero,mes){
+
+let ano = new Date().getFullYear();
+
+return `${ano}_${mes}_${numero}`;
+
+}
+
+function add(){
+
+if(!oc.value.trim()){
+
+alert("Preencha a OC");
+return;
+
+}
+
+let item = {
+
+oc: oc.value.trim(),
+os: os.value.trim(),
+mes: mesOc.value,
+recurso: recurso.value,
+utd: utd.value,
+endereco: endereco.value.trim(),
+defeito: defeito.value.trim(),
+data: dataProg.value
+
+};
+
+if(editIndex === null){
+
+dados.push(item);
+
+fetch(URL_SCRIPT,{
+
+method:"POST",
+
+body:JSON.stringify(item)
+
+})
+.then(r=>r.text())
+.then(res=>{
+
+console.log("Enviado:",res);
+
+})
+.catch(err=>{
+
+console.log("Erro:",err);
+
+});
+
+}else{
+
+dados[editIndex] = item;
+editIndex = null;
+btnAdd.innerText = "Adicionar";
+
+}
+
+limparCampos();
+salvar();
+render();
+
+}
+
+function editar(i){
+
+let d = dados[i];
+
+oc.value = d.oc;
+os.value = d.os || "";
+mesOc.value = d.mes;
+recurso.value = d.recurso;
+utd.value = d.utd;
+endereco.value = d.endereco || "";
+defeito.value = d.defeito || "";
+dataProg.value = d.data;
+
+editIndex = i;
+
+btnAdd.innerText = "Atualizar";
+
+}
+
+function limparCampos(){
+
+oc.value = "";
+os.value = "";
+endereco.value = "";
+defeito.value = "";
+dataProg.value = "";
+
+}
+
+function limpar(){
+
+if(!confirm("Apagar tudo?")) return;
+
+dados = [];
+
+salvar();
+render();
+
+}
+
+function excluir(i){
+
+dados.splice(i,1);
+
+salvar();
+render();
+
+}
+
+function render(){
+
+lista.innerHTML = dados.map((d,i)=>`
+
+<div class="listaItem">
+
+<div>
+
+<b>${gerarNumeroOcorrencia(d.oc,d.mes)}</b>
+
+<br>
+
+${d.recurso}
+
+</div>
+
+<div class="botoes">
+
+<button class="editar" onclick="editar(${i})">
+Editar
+</button>
+
+<button class="excluir" onclick="excluir(${i})">
+X
+</button>
+
+</div>
+
+</div>
+
+`).join('');
+
+}
+
+function visualizar(){
+
+let totalSemProgramacao = 0;
+let totalProgramadas = 0;
+
+let recursoCount = {
+
+"TP":0,
+"LV":0,
+"TLV":0,
+"TP+LV":0,
+"TP+PD":0,
+"TP+ROÇ":0
+
+};
+
+dados.forEach(d=>{
+
+if(d.data){
+
+totalProgramadas++;
+
+}else{
+
+totalSemProgramacao++;
+
+}
+
+if(recursoCount[d.recurso] !== undefined){
+
+recursoCount[d.recurso]++;
+
+}
+
+});
+
+let dataAtual = new Date().toLocaleString();
+
+relatorio.innerHTML = `
+
+<div class="titulo">
+ACOMPANHAMENTO-TP-LV-EPs
+</div>
+
+<div class="dataTopo">
+${dataAtual}
+</div>
+
+<div class="tabela">
+
+<div class="linha topoTabela">
+
+<div>OC</div>
+<div>Recurso</div>
+<div>UTD</div>
+<div>Status</div>
+<div>Data Programação</div>
+
+</div>
+
+${dados.map(d=>{
+
+let programada = d.data ? true : false;
+
+return `
+
+<div class="linha">
+
+<div>
+${gerarNumeroOcorrencia(d.oc,d.mes)}
+</div>
+
+<div>
+${d.recurso}
+</div>
+
+<div style="white-space:nowrap;">
+${d.utd}
+</div>
+
+<div class="${programada ? 'statusAzul' : 'statusVermelho'}">
+REALIZAR DE FORMA PROGRAMADA
+</div>
+
+<div>
+${programada
+? new Date(d.data).toLocaleDateString()
+: "SEM DATA"}
+</div>
+
+</div>
+
+`;
+
+}).join('')}
+
+</div>
+
+<div class="cards">
+
+<div class="cardResumo">
+<div>Total OCs Sem Programação</div>
+<div class="numeroResumo">
+${totalSemProgramacao}
+</div>
+</div>
+
+<div class="cardResumo">
+<div>Total OCs Programadas</div>
+<div class="numeroResumo">
+${totalProgramadas}
+</div>
+</div>
+
+</div>
+
+<div class="rodape">
+Manutenção, UTEP Setor Norte
+</div>
+
+`;
+
+tela1.style.display = "none";
+tela2.style.display = "block";
+
+}
+
+function voltar(){
+
+tela1.style.display = "block";
+tela2.style.display = "none";
+
+}
+
+function gerar(){
+
+window.scrollTo(0,0);
+
+const elemento = document.getElementById("relatorio");
+
+html2canvas(elemento,{
+scale:4,
+useCORS:true,
+scrollY:-window.scrollY,
+backgroundColor:"#ffffff",
+windowWidth:elemento.scrollWidth,
+windowHeight:elemento.scrollHeight
+}).then(canvas=>{
+
+let link = document.createElement('a');
+
+link.download = "acompanhamento.png";
+
+link.href = canvas.toDataURL("image/png",1.0);
+
+link.click();
+
+});
+
+}
+
+async function gerarPDF(){
+
+const { jsPDF } = window.jspdf;
+
+const pdf = new jsPDF('p','mm','a4');
+
+let y = 15;
+
+pdf.setFillColor(0,58,143);
+pdf.rect(0,0,210,25,'F');
+
+pdf.setTextColor(255,255,255);
+pdf.setFontSize(18);
+
+pdf.text(
+"ACOMPANHAMENTO-TP-LV-EPs",
+105,
+12,
+{align:"center"}
+);
+
+pdf.setFontSize(10);
+
+pdf.text(
+"Relatório Corporativo de Programação",
+105,
+19,
+{align:"center"}
+);
+
+y = 35;
+
+pdf.setTextColor(90);
+
+pdf.text(
+`Gerado em: ${new Date().toLocaleString()}`,
+14,
+y
+);
+
+y += 10;
+
+dados.forEach((d,index)=>{
+
+if(y > 235){
+
+pdf.addPage();
+
+y = 15;
+
+}
+
+pdf.setDrawColor(210);
+pdf.setFillColor(245,247,250);
+
+pdf.roundedRect(10,y,190,58,4,4,'FD');
+
+pdf.setFillColor(0,58,143);
+pdf.rect(10,y,190,10,'F');
+
+pdf.setTextColor(255,255,255);
+pdf.setFontSize(11);
+
+pdf.text(
+`OC: ${gerarNumeroOcorrencia(d.oc,d.mes)}`,
+14,
+y + 7
+);
+
+pdf.text(
+`OS: ${d.os || "-"}`,
+150,
+y + 7
+);
+
+pdf.setTextColor(0);
+pdf.setFontSize(10);
+
+pdf.text(
+`Recurso: ${d.recurso}`,
+14,
+y + 18
+);
+
+pdf.text(
+`UTD: ${d.utd}`,
+110,
+y + 18
+);
+
+pdf.text(
+`Data Programação: ${
+d.data
+? new Date(d.data).toLocaleDateString()
+: "SEM DATA"
+}`,
+14,
+y + 27
+);
+
+const enderecoTexto = pdf.splitTextToSize(
+`Endereço: ${d.endereco || "-"}`,
+170
+);
+
+pdf.text(
+enderecoTexto,
+14,
+y + 36
+);
+
+const defeitoTexto = pdf.splitTextToSize(
+`Defeito: ${d.defeito || "-"}`,
+170
+);
+
+pdf.text(
+defeitoTexto,
+14,
+y + 48
+);
+
+y += 68;
+
+});
+
+pdf.save("acompanhamento.pdf");
+
+}
+
+carregar();
+
+</script>
+
+</body>
+
+</html>
